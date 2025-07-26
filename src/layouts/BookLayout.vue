@@ -17,8 +17,8 @@ defineProps({
       </div>
     </div>
     <div class="pagination">
-      <router-link :to="prevPage" v-if="prevPage">⬅ 이전</router-link>
-      <router-link :to="nextPage" v-if="nextPage">다음 ➡</router-link>
+      <router-link :to="prevPage" v-if="prevPage" ><span class="p-nation__txt">⬅ 이전<</span></router-link>
+      <router-link :to="nextPage" v-if="nextPage"><span class="p-nation__txt">다음 ➡</span></router-link>
     </div>
   </div>
 </template>
@@ -29,14 +29,21 @@ defineProps({
   flex-direction: column;
   align-items: center;
   padding: 2rem;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: #00715A;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .book-pages {
   display: flex;
   width: 100%;
-  max-width: 900px;
+  height: 100%;
   border: 1px solid #ccc;
   box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .left-page,
@@ -44,11 +51,11 @@ defineProps({
   width: 50%;
   padding: 1rem;
   border-right: 1px solid #ddd;
+  background-color: #f9f9f9;
 }
 
 .right-page {
   border-right: none;
-  background-color: #f9f9f9;
 }
 
 .pagination {
@@ -57,5 +64,10 @@ defineProps({
   max-width: 900px;
   display: flex;
   justify-content: space-between;
+}
+.p-nation__txt{
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
 }
 </style>
