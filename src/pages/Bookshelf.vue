@@ -2,15 +2,15 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 const books = ref([
-  { id: 1, title: '1. Vue3 핵심 문법' },
-  { id: 2, title: '2. 컴포넌트 구조화' },
-  { id: 3, title: '3. 반응형 원리' },
-  { id: 4, title: '4. 이벤트와 바인딩' },
-  { id: 5, title: '5. 컴포저블' },
-  { id: 6, title: '6. 라우터 설정' },
-  { id: 7, title: '7. Pinia 상태관리' },
-  { id: 8, title: '8. API 통신' },
-  { id: 9, title: '9. 애니메이션' },
+  { id: 1, title: 'Vue3 핵심 문법' },
+  { id: 2, title: '컴포넌트 구조화' },
+  { id: 3, title: '반응형 원리' },
+  { id: 4, title: '이벤트와 바인딩' },
+  { id: 5, title: '컴포저블' },
+  { id: 6, title: '라우터 설정' },
+  { id: 7, title: 'Pinia 상태관리' },
+  { id: 8, title: 'API 통신' },
+  { id: 9, title: '애니메이션' },
 ])
 
 const bookRows = ref([])
@@ -41,7 +41,10 @@ onBeforeUnmount(() => {
     <div class="shelf-wrapper">
       <div class="book-shelf" v-for="(row, rowIndex) in bookRows" :key="rowIndex">
         <div class="book-row">
-          <div class="book" v-for="book in row" :key="book.id">{{ book.title }}</div>
+          <div class="book" v-for="book in row" :key="book.id">
+            <div class="book-numbuer">{{ book.id }}</div>
+            <div class="book-tit">{{ book.title }}</div>
+          </div>
         </div>
         <div class="shelf-bar" />
       </div>
@@ -83,6 +86,7 @@ onBeforeUnmount(() => {
   gap: 20px;
   padding-bottom: 16px;
   flex-wrap: nowrap;
+  width: 100%;
 }
 
 /* 책 스타일 */
@@ -93,14 +97,14 @@ onBeforeUnmount(() => {
   width: 60px;
   height: 180px;
   box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-  writing-mode: vertical-rl;
-  text-orientation: upright;
   font-weight: bold;
   color: #2c3e50;
   font-size: 1rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+  gap: 15px;
   transition: transform 0.2s;
   cursor: pointer;
 }
@@ -117,5 +121,16 @@ onBeforeUnmount(() => {
   border-top: 3px solid #4a2f1b;
   border-bottom: 2px solid #3b2214;
   border-radius: 4px;
+}
+
+.book-numbuer{
+  color: #fff;
+  background: #2c3e50;
+  border-radius: 50%;
+  writing-mode: unset;
+  padding: 0px 8px;
+}
+.book-tit{
+  writing-mode: vertical-rl;
 }
 </style>
