@@ -20,7 +20,7 @@ defineProps({
 }
 .pagination {
   margin-top: 2rem;
-  display: flex;
+  display: flex; 
   justify-content: space-between;
 }
 </style>

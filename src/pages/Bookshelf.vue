@@ -30,11 +30,13 @@ const goToChapter = (path) => {
 </template>
 <style scoped>
 .bookshelf {
-  background: #2b2b2b;
+  background: #C19A6B;
   color: #eee;
   text-align: center;
   padding: 2rem;
-  min-height: 100vh;
+  min-height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .title {
