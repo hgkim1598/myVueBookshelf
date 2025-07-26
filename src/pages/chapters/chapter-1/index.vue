@@ -1,6 +1,6 @@
 <script setup>
-// 챕터1 - 책 시작 페이지
+// 챕터1 책
 </script>
 <template>
-
+  <router-view />
 </template>

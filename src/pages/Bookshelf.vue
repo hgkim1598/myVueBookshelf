@@ -5,8 +5,8 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const books = ref([
-  { id: 1, title: 'Vue3 핵심 문법', path: '/chapter1' },
-  { id: 2, title: '컴포넌트 구조화', path: '/chapter2' },
+  { id: 1, title: 'Vue3 핵심 문법', path: '/chapter-1' },
+  { id: 2, title: '컴포넌트 구조화', path: '/chapter-2' },
   { id: 3, title: '반응형 원리' },
   { id: 4, title: '이벤트와 바인딩' },
   { id: 5, title: '컴포저블' },
@@ -40,6 +40,7 @@ onBeforeUnmount(() => {
 /** 책 내부로 이동 */
 const goToChpater = (path) =>{
   router.push(path)
+  console.log(path)
 }
 </script>
 

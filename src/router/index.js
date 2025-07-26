@@ -14,6 +14,10 @@ const routes = [
     component: () => import('@/pages/chapters/chapter-1/index.vue'),
     children: [
       {
+        path: '',
+        redirect: '/chapter-1/page-1',
+      },
+      {
         path: 'page-1',
         component: () => import('@/pages/chapters/chapter-1/Page1.vue'),
       },
