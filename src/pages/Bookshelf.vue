@@ -1,9 +1,12 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const books = ref([
-  { id: 1, title: 'Vue3 핵심 문법' },
-  { id: 2, title: '컴포넌트 구조화' },
+  { id: 1, title: 'Vue3 핵심 문법', path: '/chapter1' },
+  { id: 2, title: '컴포넌트 구조화', path: '/chapter2' },
   { id: 3, title: '반응형 원리' },
   { id: 4, title: '이벤트와 바인딩' },
   { id: 5, title: '컴포저블' },
@@ -33,6 +36,11 @@ onMounted(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', recalculateRows)
 })
+
+/** 책 내부로 이동 */
+const goToChpater = (path) =>{
+  router.push(path)
+}
 </script>
 
 <template>
@@ -41,7 +49,7 @@ onBeforeUnmount(() => {
     <div class="shelf-wrapper">
       <div class="book-shelf" v-for="(row, rowIndex) in bookRows" :key="rowIndex">
         <div class="book-row">
-          <div class="book" v-for="book in row" :key="book.id">
+          <div class="book" v-for="book in row" :key="book.id" @click="goToChpater(book.path)">
             <div class="book-numbuer">{{ book.id }}</div>
             <div class="book-tit">{{ book.title }}</div>
           </div>
