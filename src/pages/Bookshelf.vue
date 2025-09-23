@@ -1,20 +1,26 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
+import { curriculum } from '../data/curriculum'
 
 const router = useRouter()
 
-const books = ref([
-  { id: 1, title: 'Vue3 핵심 문법', path: '/chapter-1' },
-  { id: 2, title: '컴포넌트 구조화', path: '/chapter-2' },
-  { id: 3, title: '반응형 원리' },
-  { id: 4, title: '이벤트와 바인딩' },
-  { id: 5, title: '컴포저블' },
-  { id: 6, title: '라우터 설정' },
-  { id: 7, title: 'Pinia 상태관리' },
-  { id: 8, title: 'API 통신' },
-  { id: 9, title: '애니메이션' },
-])
+// const books = ref([
+//   { id: 1, title: 'Vue3 핵심 문법', path: '/chapter-1' },
+//   { id: 2, title: '컴포넌트 구조화', path: '/chapter-2' },
+//   { id: 3, title: '반응형 원리' },
+//   { id: 4, title: '이벤트와 바인딩' },
+//   { id: 5, title: '컴포저블' },
+//   { id: 6, title: '라우터 설정' },
+//   { id: 7, title: 'Pinia 상태관리' },
+//   { id: 8, title: 'API 통신' },
+//   { id: 9, title: '애니메이션' },
+// ])
+const books = ref(curriculum.map(chapter => ({
+  id: chapter.id,
+  title: chapter.title,
+  path: chapter.path
+})))
 
 const bookRows = ref([])
 const BOOK_WIDTH = 80  // 책 폭 + margin 포함

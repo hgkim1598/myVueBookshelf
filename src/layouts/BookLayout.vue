@@ -1,25 +1,51 @@
-<!-- src/layouts/BookLayout.vue -->
 <script setup>
-defineProps({
-  prevPage: { type: String, default: '' },
-  nextPage: { type: String, default: '' },
-});
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import { curriculum } from '@/data/curriculum.js'
+
+const route = useRoute()
+const router = useRouter()
+
+const currentChapter = computed(() => {
+  const chapterPath = route.path.split('/page')[0]
+  return curriculum.find(chapter => chapter.path === chapterPath)
+})
+
+const currentPageId = computed(() => parseInt(route.params.pageId, 10))
+const totalPages = computed(() => currentChapter.value?.totalPages || 0)
+
+const goToPrevPage = () => {
+  if (currentPageId.value > 1) {
+    router.push(`${currentChapter.value.path}/page/${currentPageId.value - 1}`)
+  }
+}
+
+const goToNextPage = () => {
+  if (currentPageId.value < totalPages.value) {
+    router.push(`${currentChapter.value.path}/page/${currentPageId.value + 1}`)
+  }
+}
 </script>
+
 
 <template>
   <div class="book-layout">
-    <div class="book-pages">
-      <div class="left-page">
-        <slot name="left" />
-      </div>
-      <div class="right-page">
-        <slot name="right" />
-      </div>
-    </div>
-    <div class="pagination">
-      <router-link :to="prevPage" v-if="prevPage" ><span class="p-nation__txt">⬅ 이전<</span></router-link>
-      <router-link :to="nextPage" v-if="nextPage"><span class="p-nation__txt">다음 ➡</span></router-link>
-    </div>
+    <header class="book-header">
+      <router-link to="/bookshelf" class="back-to-shelf">
+        📚 책장으로 돌아가기
+      </router-link>
+      <h1>{{ currentChapter?.title }}</h1>
+    </header>
+    
+    <main class="book-content">
+      <router-view />
+    </main>
+    
+    <footer class="book-navigation">
+      <button @click="goToPrevPage" :disabled="isFirstPage">이전 페이지</button>
+      <span>{{ currentPageId }} / {{ totalPages }}</span>
+      <button @click="goToNextPage" :disabled="isLastPage">다음 페이지</button>
+    </footer>
   </div>
 </template>
 

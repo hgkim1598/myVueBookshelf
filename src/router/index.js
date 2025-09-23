@@ -1,48 +1,51 @@
+// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
+import { curriculum } from '@/data/curriculum.js'
 
-const routes = [
+const baseRoutes = [
   {
     path: '/',
     redirect: '/bookshelf',
   },
   {
     path: '/bookshelf',
-    component: () => import('@/pages/Bookshelf.vue'),
+    name: 'BookShelf',
+    component: () => import('@/pages/chapters/BookShelf.vue'),
   },
-  {
-    path: '/chapter-1',
-    name: 'chapter-1',
-    component: () => import('@/pages/chapters/chapter-1/index.vue'),
-    meta: { title: '1주차: Vue3 핵심 문법' },
-    children: [
-      {
-        path: '',
-        redirect: '/chapter-1/page-1',
-      },
-      {
-        path: 'page-1',
-        component: () => import('@/pages/chapters/chapter-1/Page1.vue'),
-      },
-      // {
-      //   path: 'page-2',
-      //   component: () => import('@/pages/chapters/chapter-1/Page2.vue'),
-      // },
-    ],
-  },
-  // chapter-2도 같은 방식으로 계속 추가
 ]
+
+const chapterRoutes = curriculum.map(chapter => {
+  const chapterChildren = []
+
+  // 첫 페이지로 리다이렉트
+  chapterChildren.push({
+    path: '',
+    redirect: `${chapter.path}/page/1`,
+  })
+
+  // 각 페이지 라우트 생성
+  for (let i = 1; i <= chapter.totalPages; i++) {
+    chapterChildren.push({
+      path: `page/${i}`,
+      name: `Chapter${chapter.id}Page${i}`,
+      component: () => import(`@/pages/chapters/chapter-${chapter.id}/Page${i}.vue`),
+      props: { chapterId: chapter.id, pageId: i }
+    })
+  }
+
+  return {
+    path: chapter.path,
+    component: () => import('@/layouts/BookLayout.vue'),
+    children: chapterChildren,
+  }
+})
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: [...baseRoutes, ...chapterRoutes],
   scrollBehavior() {
-    return { top: 0 } // 페이지 이동시 맨 위로 이동
+    return { top: 0 }
   },
-})
-
-// 라우트 변경 후 문서 타이틀 갱신
-router.afterEach((to) => {
-  document.title = to.meta?.title ?? 'My Vue Bookshelf'
 })
 
 export default router
