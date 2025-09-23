@@ -11,7 +11,9 @@ const routes = [
   },
   {
     path: '/chapter-1',
+    name: 'chapter-1',
     component: () => import('@/pages/chapters/chapter-1/index.vue'),
+    meta: { title: '1주차: Vue3 핵심 문법' },
     children: [
       {
         path: '',
@@ -33,6 +35,14 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior() {
+    return { top: 0 } // 페이지 이동시 맨 위로 이동
+  },
+})
+
+// 라우트 변경 후 문서 타이틀 갱신
+router.afterEach((to) => {
+  document.title = to.meta?.title ?? 'My Vue Bookshelf'
 })
 
 export default router

@@ -39,8 +39,10 @@ onBeforeUnmount(() => {
 
 /** 책 내부로 이동 */
 const goToChpater = (path) =>{
-  router.push(path)
-  console.log(path)
+  if (path) {
+    router.push(path)
+    console.log(path)
+  }
 }
 </script>
 
@@ -48,15 +50,13 @@ const goToChpater = (path) =>{
   <div class="bookshelf">
     <h1 class="title">📚 나의 Vue 학습 책장</h1>
     <div class="shelf-wrapper">
-      <div class="book-shelf" v-for="(row, rowIndex) in bookRows" :key="rowIndex">
-        <div class="book-row">
-          <div class="book" v-for="book in row" :key="book.id" @click="goToChpater(book.path)">
-            <div class="book-numbuer">{{ book.id }}</div>
-            <div class="book-tit">{{ book.title }}</div>
-          </div>
+      <div class="book-shelf">
+        <div class="book" v-for="book in books" :key="book.id" @click="goToChpater(book.path)">
+          <div class="book-numbuer">{{ book.id }}</div>
+          <div class="book-tit">{{ book.title }}</div>
         </div>
-        <div class="shelf-bar" />
       </div>
+      <div class="shelf-bar" />
     </div>
   </div>
 </template>
@@ -84,19 +84,21 @@ const goToChpater = (path) =>{
 
 /* 각 줄 */
 .book-shelf {
-  margin-bottom: 60px;
-  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; 
+  padding-bottom: 16px;
 }
 
 /* 책 줄 */
-.book-row {
+/* .book-row {
   display: flex;
   justify-content: flex-start;
   gap: 20px;
   padding-bottom: 16px;
   flex-wrap: nowrap;
   width: 100%;
-}
+} */
 
 /* 책 스타일 */
 .book {
@@ -116,6 +118,7 @@ const goToChpater = (path) =>{
   gap: 15px;
   transition: transform 0.2s;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .book:hover {
