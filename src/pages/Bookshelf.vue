@@ -149,6 +149,8 @@ const goToChpater = (path) =>{
   padding: 0px 8px;
 }
 .book-tit{
-  writing-mode: vertical-rl;
+  writing-mode: vertical-lr;
+  text-orientation: upright; /* 모든 글자를 세로 방향으로 정렬 */
+  -webkit-text-orientation: upright;
 }
 </style>

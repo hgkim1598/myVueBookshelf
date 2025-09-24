@@ -10,7 +10,7 @@ const baseRoutes = [
   {
     path: '/bookshelf',
     name: 'BookShelf',
-    component: () => import('@/pages/chapters/BookShelf.vue'),
+    component: () => import('@/pages/BookShelf.vue'),
   },
 ]
 
