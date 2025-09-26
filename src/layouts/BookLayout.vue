@@ -11,89 +11,142 @@ const currentChapter = computed(() => {
   return curriculum.find(chapter => chapter.path === chapterPath)
 })
 
-const currentPageId = computed(() => parseInt(route.params.pageId, 10))
-const totalPages = computed(() => currentChapter.value?.totalPages || 0)
+const currentPageId = computed(() => {
+  const n = Number(route.params.pageId)
+  return Number.isFinite(n) ? n : 1
+})
+
+const totalPages = computed(() => currentChapter.value?.totalPages ?? 0)
+
+const isFirstPage = computed(() => currentPageId.value <= 1)
+const isLastPage  = computed(() => currentPageId.value >= totalPages.value)
 
 const goToPrevPage = () => {
-  if (currentPageId.value > 1) {
+  if (!isFirstPage.value) {
     router.push(`${currentChapter.value.path}/page/${currentPageId.value - 1}`)
   }
 }
 
 const goToNextPage = () => {
-  if (currentPageId.value < totalPages.value) {
+  if (!isLastPage.value) {
     router.push(`${currentChapter.value.path}/page/${currentPageId.value + 1}`)
   }
 }
 </script>
 
-
 <template>
   <div class="book-layout">
     <header class="book-header">
-      <router-link to="/bookshelf" class="back-to-shelf">
-        📚 책장으로 돌아가기
-      </router-link>
+      <router-link to="/bookshelf" class="back-to-shelf">📚 책장으로 돌아가기</router-link>
       <h1>{{ currentChapter?.title }}</h1>
     </header>
-    
+
     <main class="book-content">
       <router-view />
     </main>
-    
+
     <footer class="book-navigation">
       <button @click="goToPrevPage" :disabled="isFirstPage">이전 페이지</button>
-      <span>{{ currentPageId }} / {{ totalPages }}</span>
+      <span class="p-nation__txt">{{ currentPageId }} / {{ totalPages }}</span>
       <button @click="goToNextPage" :disabled="isLastPage">다음 페이지</button>
     </footer>
   </div>
 </template>
-
+<style>
+:root {
+  --book-bg: #0b1f2a;
+  --text: #f5f7fa;
+  --muted: #cbd5e1;
+  --accent: #22c55e;
+  --btn-bg: #111827;
+  --btn-bg-disabled: #374151;
+  --btn-text: #ffffff;
+  --container-w: 980px;
+}
+</style>
 <style scoped>
+
+/* ===== 레이아웃 ===== */
 .book-layout {
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  background-color: #00715A;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.book-pages {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  border: 1px solid #ccc;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--book-bg);
+  padding: 32px 20px 48px;
   box-sizing: border-box;
 }
 
-.left-page,
-.right-page {
-  width: 50%;
-  padding: 1rem;
-  border-right: 1px solid #ddd;
-  background-color: #f9f9f9;
-}
-
-.right-page {
-  border-right: none;
-}
-
-.pagination {
-  margin-top: 1.5rem;
+/* 헤더 */
+.book-header {
   width: 100%;
-  max-width: 900px;
+  max-width: var(--container-w);
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  text-align: center;
 }
-.p-nation__txt{
-  color: #fff;
+.book-header h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 56px);
+  line-height: 1.15;
+  color: var(--text);
+  font-weight: 800;
+}
+.back-to-shelf {
+  color: var(--accent);
   font-weight: 700;
-  font-size: 14px;
+  text-decoration: none;
+}
+.back-to-shelf:hover { text-decoration: underline; }
+
+/* 본문 */
+.book-content {
+  width: 100%;
+  max-width: var(--container-w);
+  margin: 0 auto;
+  color: var(--text);
+}
+
+/* 하단 페이지 네비게이션 */
+.book-navigation {
+  width: 100%;
+  max-width: var(--container-w);
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.book-navigation button {
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 20px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .06s ease, opacity .2s ease;
+}
+.book-navigation button:active { transform: translateY(1px); }
+.book-navigation button:disabled {
+  background: var(--btn-bg-disabled);
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.p-nation__txt {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* 작은 화면 보완 */
+@media (max-width: 640px) {
+  .book-layout { padding: 20px 14px 32px; }
+  .book-navigation { gap: 10px; }
+  .book-navigation button { padding: 10px 14px; }
 }
 </style>
