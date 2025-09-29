@@ -68,6 +68,7 @@ const goToNextPage = () => {
 
 /* ===== 레이아웃 ===== */
 .book-layout {
+  height: 100dvh;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -75,6 +76,7 @@ const goToNextPage = () => {
   background-color: var(--book-bg);
   padding: 32px 20px 48px;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* 헤더 */
@@ -104,10 +106,12 @@ const goToNextPage = () => {
 
 /* 본문 */
 .book-content {
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
   max-width: var(--container-w);
-  margin: 0 auto;
   color: var(--text);
+  overflow: hidden;
 }
 
 /* 하단 페이지 네비게이션 */
