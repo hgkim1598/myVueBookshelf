@@ -61,7 +61,7 @@ const goToNextPage = () => {
   --btn-bg: #111827;
   --btn-bg-disabled: #374151;
   --btn-text: #ffffff;
-  --container-w: 980px;
+  --container-w: 1000px;
 }
 </style>
 <style scoped>
@@ -108,8 +108,8 @@ const goToNextPage = () => {
 .book-content {
   flex: 1 1 auto;
   min-height: 0;
-  width: 100%;
-  max-width: var(--container-w);
+  width: 100dvw;
+  min-width: var(--container-w);
   color: var(--text);
   overflow: hidden;
 }

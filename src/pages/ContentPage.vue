@@ -62,15 +62,15 @@ const props = defineProps({
   --page-padding: 24px;
   display: grid;
   grid-template-columns: 1fr 2px 1fr; /* left | gutter | right */
+  grid-template-rows: 1fr;
   gap: var(--page-gap);
   --text-color: #333;
   --muted-color: #555;
-  /* ✅ 화면 꽉 채우기: 상위 레이아웃(헤더 등)이 있으면 변수로 여백 보정 */
-  /* 필요시 BookLayout에서 .book-root 같은 상위에 height:100vh 주고 여긴 height:100%로 써도 OK */
-  min-height: calc(90vh - var(--book-offset, 0px));
-  /* 높이를 강제하고 싶으면 height 사용: height: calc(100vh - var(--book-offset, 0px)); */
-  max-width: 1000px;
-  margin: 0 auto;
+  min-height: 0;
+  height: 100%;
+  min-width: 1000px;
+  margin: 0 20px;
+  overflow: hidden;
 }
 
 .page {
@@ -82,7 +82,10 @@ const props = defineProps({
 
   display: flex;
   flex-direction: column;
+  /* height: 100%; */
   min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
 }
 
 .page-title h2 {
@@ -92,7 +95,7 @@ const props = defineProps({
 .page-body {
   flex: 1 1 auto;
   min-height: 0;
-  overflow: auto;
+  overflow: visible;
 }
 
 .section { margin-bottom: 24px; }
@@ -115,6 +118,7 @@ const props = defineProps({
 
 .gutter {
   background: linear-gradient(#ddd, #ddd) no-repeat center/2px 100%;
+  align-self: stretch;
 }
 
 .right.sticky {
