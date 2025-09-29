@@ -72,6 +72,7 @@ button {
   border: 1px solid #ddd;
   background: #fafafa;
   cursor: pointer;
+  color: #333;
 }
 button:active { transform: translateY(1px); }
 </style>
