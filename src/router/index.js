@@ -1,73 +1,60 @@
-// src/router/index.js
 import { createRouter, createWebHistory } from 'vue-router'
 import { curriculum } from '@/data/curriculum.js'
 
-// 기본 라우트
+// 페이지 파일 매핑 (Vite 전용)
+const pageModules = import.meta.glob('/src/pages/chapters/chapter-*/Page*.vue')
+
 const baseRoutes = [
-  {
-    path: '/',
-    redirect: '/bookshelf',
-  },
-  {
-    path: '/bookshelf',
-    name: 'BookShelf',
-    component: () => import('@/pages/BookShelf.vue'),
-  },
+  { path: '/', redirect: '/bookshelf' },
+  { path: '/bookshelf', name: 'BookShelf', component: () => import('@/pages/BookShelf.vue') },
 ]
 
-// 챕터별(부모) + 페이지별(자식) 라우트 생성
 const chapterRoutes = curriculum.map((chapter) => {
   const children = []
 
-  // 챕터 루트 → 1페이지로 리다이렉트
-  children.push({
-    path: '',
-    redirect: `${chapter.path}/page/1`,
-  })
+  // 챕터 루트 -> 1페이지
+  children.push({ path: '', redirect: 'page/1' })
 
-  // 1..totalPages 정적 자식 라우트 생성
+  // 1..totalPages
   for (let i = 1; i <= chapter.totalPages; i++) {
+    const key = `/src/pages/chapters/chapter-${chapter.id}/Page${i}.vue`
+    const loader = pageModules[key]
+    if (!loader) {
+      // 파일이 없으면 스킵하거나 404로 유도
+      // console.warn(`[router] 파일 없음: ${key}`)
+      continue
+    }
     children.push({
       path: `page/${i}`,
       name: `Chapter${chapter.id}Page${i}`,
-      component: () =>
-        import(`@/pages/chapters/chapter-${chapter.id}/Page${i}.vue`),
-      // 각 Page*.vue가 props를 원한다면 사용(선택)
-      props: { chapterId: chapter.id, pageId: i },
+      component: loader,                // import() 대신 glob 매핑 사용
+      meta: { chapterId: chapter.id, pageId: i },
+      // props: { chapterId: chapter.id, pageId: i }, // 필요 시
     })
   }
 
   return {
-    path: chapter.path,
+    path: chapter.path, // 예: '/chapter-1'
     component: () => import('@/layouts/BookLayout.vue'),
+    meta: { chapterId: chapter.id },    // 부모에도 chapterId 심어두면 편함
     children,
   }
 })
 
-// 최종 라우터
 const router = createRouter({
   history: createWebHistory(),
-  routes: [
-    ...baseRoutes,
-    ...chapterRoutes,
-  ],
+  routes: [...baseRoutes, ...chapterRoutes],
   scrollBehavior() {
     return { top: 0 }
   },
 })
 
-// (선택) 잘못된 페이지 번호 접근 시 방어 로직
-// 현재 구조(정적 경로)에서는 /chapter-x/page/999 같은 주소가 매칭되지 않아 자동으로 404로 빠집니다.
-// 아래 가드는 "매칭은 되었지만 범위 밖"인 경우를 추가 방어하고 싶을 때 사용합니다.
+// 범위 밖 방어(정적 경로라 사실상 불필요하지만 유지해도 무방)
 router.beforeEach((to) => {
-  // 어떤 챕터 하위인지 식별
   const ch = curriculum.find((c) => to.path.startsWith(c.path + '/'))
   if (!ch) return
-
-  // /page/숫자 패턴 추출
   const m = to.path.match(/\/page\/(\d+)$/)
   if (!m) return
-
   const page = Number(m[1])
   if (!Number.isFinite(page) || page < 1 || page > ch.totalPages) {
     return { path: `${ch.path}/page/1` }
