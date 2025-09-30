@@ -24,16 +24,9 @@
     <section class="page right">
       <div class="page-body">
         <div class="section code">
-          <h3>💻 코드</h3>
+          <h3>💻 예제</h3>
           <slot name="code">
             <pre v-if="code"><code class="language-javascript">{{ code }}</code></pre>
-          </slot>
-        </div>
-
-        <div class="section result">
-          <h3>✨ 실행 결과</h3>
-          <slot name="result">
-            <p v-if="result">{{ result }}</p>
           </slot>
         </div>
       </div>
@@ -57,90 +50,5 @@ const props = defineProps({
 </script>
 
 <style scoped>
-.content-book {
-  --page-gap: 24px;
-  --page-padding: 24px;
-  display: grid;
-  grid-template-columns: 1fr 2px 1fr; /* left | gutter | right */
-  grid-template-rows: 1fr;
-  gap: var(--page-gap);
-  --text-color: #333;
-  --muted-color: #555;
-  min-height: 0;
-  height: 100%;
-  min-width: 1000px;
-  margin: 0 20px;
-  overflow: hidden;
-}
 
-.page {
-  background: #fff;
-  border-radius: 10px;
-  padding: var(--page-padding);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-  color: var(--text-color);
-
-  display: flex;
-  flex-direction: column;
-  /* height: 100%; */
-  min-height: 0;
-  overflow: auto;
-  box-sizing: border-box;
-}
-
-.page-title h2 {
-  margin: 0 0 12px;
-}
-
-.page-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: visible;
-}
-
-.section { margin-bottom: 24px; }
-.section h3 { margin: 0 0 12px; color: #333; }
-.concept { line-height: 1.6; color: #555; }
-
-.code pre {
-  background: #f8f8f8;
-  border-radius: 6px;
-  padding: 14px;
-  overflow-x: auto;
-}
-
-.result p {
-  background: #e8f5e8;
-  padding: 14px;
-  border-radius: 6px;
-  border-left: 4px solid #4caf50;
-}
-
-.gutter {
-  background: linear-gradient(#ddd, #ddd) no-repeat center/2px 100%;
-  align-self: stretch;
-}
-
-.right.sticky {
-  position: sticky;
-  top: 16px;
-  align-self: start;
-  height: fit-content;
-}
-
-.pager {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-@media (max-width: 960px) {
-  .content-book {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-  .gutter { display: none; }
-  .right.sticky { position: static; }
-}
 </style>

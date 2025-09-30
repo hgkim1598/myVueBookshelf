@@ -1,15 +1,31 @@
-<!-- src/pages/chapters/chapter-1/Page1.vue -->
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { curriculum } from '@/data/curriculum.js'
-import ContentPage from '@/pages/ContentPage.vue' // 또는 '@/components/ContentPage.vue'
+import ContentPage from '@/pages/ContentPage.vue'
+import ExamplePair from '@/components/ExamplePair.vue'
 
-// 데모용 상태: 실행 결과 영역에서 실제로 반응하도록
-const count = ref(0)
-const doubled = computed(() => count.value * 2)
+// Ex1: 기본 반응형
+const count1 = ref(0)
+const doubled1 = computed(() => count1.value * 2)
 
-// (선택) 이전/다음 페이지 네비게이션: 기존에 만드신 로직 재사용
+// Ex2: 라이프사이클 + watch
+const form2 = reactive({ keyword: '' })
+const log2 = ref([])
+onMounted(() => {
+  log2.value.push('onMounted: 초기화 로직 실행')
+})
+watch(() => form2.keyword, (nv, ov) => {
+  log2.value.push(`watch: ${ov ?? '(init)'} → ${nv}`)
+})
+
+// Ex3: props/emit 데모용 (간단히 부모-자식 통신)
+const childValue3 = ref('')
+function handleChildSubmit3(payload) {
+  childValue3.value = payload
+}
+
+// 네비게이션
 const route = useRoute()
 const chapterPath = route.path.split('/page')[0]
 const currentChapter = curriculum.find(c => c.path === chapterPath)
@@ -22,46 +38,126 @@ const nextPath = `${currentChapter?.path}/page/${currentPage + 1}`
 
 <template>
   <ContentPage>
-    <!-- 제목 -->
     <template #title>
-      <h2>📘 1-1: Vue 3 Composition API 소개</h2>
+      <h2>📘 1-1: <code>setup()</code>와 &lt;script setup&gt;</h2>
     </template>
 
-    <!-- 좌측: 개념 -->
+    <!-- 좌측 설명 -->
     <template #concept>
+      <h3>왜 setup()인가?</h3>
       <ul>
-        <li><strong>setup()</strong>: Composition API의 진입점</li>
-        <li><strong>ref</strong> / <strong>reactive</strong>: 반응형 상태 만들기</li>
-        <li><strong>computed</strong>: 계산된 값(파생 상태)</li>
+        <li><b>관심사 기준</b>으로 로직을 묶을 수 있음</li>
+        <li>재사용 가능한 <em>composable</em> 추출이 쉬움</li>
+        <li>TS와 결합하면 IDE 도움 강화</li>
       </ul>
-      <p>Composition API는 로직을 기능 단위로 모듈화하고 재사용하기에 유리합니다.</p>
+
+      <h4>&lt;script setup&gt; 특징</h4>
+      <ul>
+        <li>템플릿에 자동으로 노출됨 → <code>return</code> 불필요</li>
+        <li>간결한 문법, 최신 Vue 3 권장 방식</li>
+      </ul>
     </template>
 
-    <!-- 우측 상단: 코드 -->
+    <!-- 우측 예제들 -->
     <template #code>
-      <pre><code>
-import &#123; ref, computed &#125; from 'vue'
+      <!-- Ex1 -->
+      <ExamplePair
+        title="Ex1) ref/computed"
+        note="원시값은 ref, 객체/배열은 reactive"
+      >
+        <template #code>
+<pre v-pre><code>import { ref, computed } from 'vue'
 
 const count = ref(0)
-const doubled = computed(() =&gt; count.value * 2)
-      </code></pre>
+const doubled = computed(() =&gt; count.value * 2)</code></pre>
+        </template>
+        <template #result>
+          <div style="display:flex; gap:12px; align-items:center;">
+            <button @click="count1++">+1</button>
+            <span>count: {{ count1 }}</span>
+            <span>/ doubled: {{ doubled1 }}</span>
+          </div>
+        </template>
+      </ExamplePair>
+
+      <!-- Ex2 -->
+      <ExamplePair
+        title="Ex2) onMounted + watch"
+        note="DOM 접근은 onMounted, 특정 상태 추적은 watch"
+      >
+        <template #code>
+<pre v-pre><code>import { reactive, ref, watch, onMounted } from 'vue'
+
+const form = reactive({ keyword: '' })
+const log = ref([])
+
+onMounted(() =&gt; {
+  log.value.push('onMounted: 초기화 로직 실행')
+})
+
+watch(() =&gt; form.keyword, (nv, ov) =&gt; {
+  log.value.push(`watch: ${ov ?? '(init)'} → ${nv}`)
+})</code></pre>
+        </template>
+        <template #result>
+          <div style="display:flex; flex-direction:column; gap:8px;">
+            <input
+              v-model="form2.keyword"
+              placeholder="키워드 입력"
+              style="padding:6px 8px; border:1px solid #ddd; border-radius:6px; width: 240px;"
+            />
+            <ul style="margin:0; padding-left: 18px;">
+              <li v-for="(line, i) in log2" :key="i">{{ line }}</li>
+            </ul>
+          </div>
+        </template>
+      </ExamplePair>
+
+      <!-- Ex3 -->
+      <ExamplePair
+        title="Ex3) props + emit"
+        note="자식 → 부모 통신"
+      >
+        <template #code>
+<pre v-pre><code>// ChildInput.vue
+&lt;script setup&gt;
+const props = defineProps({ modelValue: String })
+const emit  = defineEmits(['update:modelValue','submit'])
+
+function onSubmit() {
+  emit('submit', props.modelValue)
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;input
+    :value="modelValue"
+    @input="e =&gt; emit('update:modelValue', e.target.value)"
+  /&gt;
+  &lt;button @click="onSubmit"&gt;Submit&lt;/button&gt;
+&lt;/template&gt;</code></pre>
+        </template>
+        <template #result>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <input
+              :value="childValue3"
+              @input="e => childValue3 = e.target.value"
+              placeholder="자식 입력"
+              style="padding:6px 8px; border:1px solid #ddd; border-radius:6px;"
+            />
+            <button @click="handleChildSubmit3(childValue3)">Submit</button>
+            <span style="margin-left:8px;">부모가 받은 값: <b>{{ childValue3 }}</b></span>
+          </div>
+        </template>
+      </ExamplePair>
     </template>
 
-    <!-- 우측 하단: 실행 결과 (실제 인터랙션) -->
-    <template #result>
-      <div style="display:flex; gap:12px; align-items:center;">
-        <button @click="count++">+1</button>
-        <span>count: {{ count }}</span>
-        <span> / doubled: {{ doubled }}</span>
-      </div>
-    </template>
-
-    <!-- (선택) 페이지 네비게이션 -->
-    <template #pager>
+    <!-- 네비 -->
+    <!-- <template #pager>
       <RouterLink v-if="!isFirst" :to="prevPath">← 이전</RouterLink>
       <div style="flex:1"></div>
       <RouterLink v-if="!isLast" :to="nextPath">다음 →</RouterLink>
-    </template>
+    </template> -->
   </ContentPage>
 </template>
 

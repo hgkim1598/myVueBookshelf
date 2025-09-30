@@ -1,0 +1,10 @@
+// 엔트리
+@use 'variables';
+@use 'mixins';
+@use 'layout';
+
+body {
+  font-family: 'Noto Sans KR', sans-serif;
+  color: #333;
+  background: #f4f4f4;
+}
