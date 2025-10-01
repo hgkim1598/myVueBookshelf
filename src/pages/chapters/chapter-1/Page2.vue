@@ -13,19 +13,25 @@ import ExamplePair from '@/components/ExamplePair.vue'
     <!-- 좌측 개념 -->
     <template #concept>
       <h3>📖 Options API란?</h3>
-      <ul>
-        <li><b>data / computed / methods / watch</b> 같은 옵션으로 구성</li>
-        <li>구조가 명확해서 초심자나 레거시 코드 이해에 유리</li>
-        <li>하지만 로직이 흩어져서 응집도가 낮아질 수 있음</li>
-      </ul>
+
+      <div class="list-center">
+        <ul class="list--hang">
+          <li><b>data / computed / methods / watch</b> 같은 옵션으로 구성</li>
+          <li>구조가 명확해서 초심자나 레거시 코드 이해에 유리</li>
+          <li>하지만 로직이 흩어져서 응집도가 낮아질 수 있음</li>
+        </ul>
+      </div>
 
       <h4>실무 포인트</h4>
-      <ul>
-        <li>기존 프로젝트 유지보수 시 여전히 많이 마주침</li>
-        <li>새 기능 추가는 Composition API 권장</li>
-        <li>점진적으로 Composition API로 마이그레이션</li>
-      </ul>
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>기존 프로젝트 유지보수 시 여전히 많이 마주침</li>
+          <li>새 기능 추가는 Composition API 권장</li>
+          <li>점진적으로 Composition API로 마이그레이션</li>
+        </ul>
+      </div>
     </template>
+
 
     <!-- 우측 예제 -->
     <template #code>

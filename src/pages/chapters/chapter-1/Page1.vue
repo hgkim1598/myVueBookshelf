@@ -46,6 +46,7 @@ const nextPath = `${currentChapter?.path}/page/${currentPage + 1}`
     <template #concept>
       <h3>왜 setup()인가?</h3>
       <div class="list-center">
+        <!-- ① INSIDE 버전 -->
         <ul class="list--inside">
           <li><b>관심사 기준</b>으로 로직을 묶을 수 있음</li>
           <li>재사용 가능한 <em>composable</em> 추출이 쉬움</li>
