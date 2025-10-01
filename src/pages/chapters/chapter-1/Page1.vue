@@ -45,17 +45,23 @@ const nextPath = `${currentChapter?.path}/page/${currentPage + 1}`
     <!-- 좌측 설명 -->
     <template #concept>
       <h3>왜 setup()인가?</h3>
-      <ul>
-        <li><b>관심사 기준</b>으로 로직을 묶을 수 있음</li>
-        <li>재사용 가능한 <em>composable</em> 추출이 쉬움</li>
-        <li>TS와 결합하면 IDE 도움 강화</li>
-      </ul>
+      <div class="list-center">
+        <ul class="list--inside">
+          <li><b>관심사 기준</b>으로 로직을 묶을 수 있음</li>
+          <li>재사용 가능한 <em>composable</em> 추출이 쉬움</li>
+          <li>TS와 결합하면 IDE 도움 강화</li>
+        </ul>
+      </div>
 
       <h4>&lt;script setup&gt; 특징</h4>
-      <ul>
-        <li>템플릿에 자동으로 노출됨 → <code>return</code> 불필요</li>
-        <li>간결한 문법, 최신 Vue 3 권장 방식</li>
-      </ul>
+
+      <!-- ② HANGING 버전 (간격만 줄인 기본형) -->
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>템플릿에 자동으로 노출됨 → <code>return</code> 불필요</li>
+          <li>간결한 문법, 최신 Vue 3 권장 방식</li>
+        </ul>
+      </div>
     </template>
 
     <!-- 우측 예제들 -->

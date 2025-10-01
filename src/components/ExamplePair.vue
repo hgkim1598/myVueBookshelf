@@ -42,6 +42,7 @@ defineProps({
   padding: 10px;
   background: #fafafa;
   overflow: auto;
+  text-align: start;
 }
 .ex-result {
   border: 1px solid #eee;

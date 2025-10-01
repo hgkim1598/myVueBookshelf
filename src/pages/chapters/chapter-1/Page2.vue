@@ -95,12 +95,5 @@ export default {
         </template>
       </ExamplePair>
     </template>
-
-    <!-- 네비게이션 -->
-    <template #pager>
-      <RouterLink to="/chapter-1/page/1">← 이전</RouterLink>
-      <div style="flex:1"></div>
-      <RouterLink to="/chapter-1/page/3">다음 →</RouterLink>
-    </template>
   </ContentPage>
 </template>

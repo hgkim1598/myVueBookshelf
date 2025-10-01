@@ -1,1 +1,46 @@
 // 페이지별 스타일
+/* 좌측 페이지의 개념 영역에만 한정 */
+.content-book .page.left .concept {
+  /* 공통: 가운데 배치 래퍼 */
+  .list-center { text-align: center; }
+
+  /* 공통: ul을 가운데 두되, 항목은 좌측 정렬 */
+  .list-base {
+    display: inline-block;  /* 내용 폭만큼만 → 가운데 배치 */
+    text-align: left;       /* li 텍스트는 좌측 */
+    margin: .5rem 0;
+    padding: 0;
+    max-width: 56rem;       /* 필요 없으면 삭제 */
+  }
+
+  /* ① INSIDE 버전: 마커를 내용 안으로 → 텍스트와 ‘바짝’ */
+  .list--inside {
+    @extend .list-base;
+    list-style: disc inside;
+    padding-left: .75rem;   /* 기본 40px 대신 슬림 */
+  }
+  .list--inside li { line-height: 1.7; margin: .25rem 0; }
+  .list--inside li::marker { color:#5d7a6b; font-size:.95em; }
+
+  /* ② HANGING(바깥 마커 + 간격만 축소) */
+  /* 기본 ‘outside’ 유지하되 들여쓰기/내어쓰기로 간격만 줄임 */
+  .list--hang {
+    @extend .list-base;
+    list-style: disc outside;
+    padding-left: 1.2rem;    /* 기본보다 작게 */
+  }
+  .list--hang li {
+    line-height: 1.7;
+    margin: .25rem 0;
+    /* 첫 줄만 살짝 당겨서 마커-텍스트 간격 축소 (브라우저 호환 좋음) */
+    text-indent: -.2rem;
+  }
+  .list--hang li::marker { color:#5d7a6b; font-size:.95em; }
+
+  /* ③ PLAIN(점 제거) */
+  .list--plain {
+    @extend .list-base;
+    list-style: none;
+  }
+  .list--plain li { line-height: 1.7; margin: .25rem 0; }
+}
