@@ -44,11 +44,9 @@ onBeforeUnmount(() => {
 })
 
 /** 책 내부로 이동 */
-const goToChpater = (path) =>{
-  if (path) {
-    router.push(path)
-    console.log(path)
-  }
+const goToChpater = (path, id) =>{
+  if (!path || !id) return
+  router.push(`${path}/page/1`)
 }
 </script>
 
@@ -57,7 +55,7 @@ const goToChpater = (path) =>{
     <h1 class="title">📚 나의 Vue 학습 책장</h1>
     <div class="shelf-wrapper">
       <div class="book-shelf">
-        <div class="book" v-for="book in books" :key="book.id" @click="goToChpater(book.path)">
+        <div class="book" v-for="book in books" :key="book.id" @click="goToChpater(book.path, book.id)">
           <div class="book-numbuer">{{ book.id }}</div>
           <div class="book-tit">{{ book.title }}</div>
         </div>
@@ -68,89 +66,5 @@ const goToChpater = (path) =>{
 </template>
 
 <style scoped>
-.bookshelf {
-  background: #c19a6b;
-  min-height: 100vh;
-  text-align: center;
-  padding: 2rem;
-  box-sizing: border-box;
-}
 
-.title {
-  font-size: 2.5rem;
-  color: #fff;
-  margin-bottom: 2rem;
-}
-
-.shelf-wrapper {
-  width: 90%;
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-/* 각 줄 */
-.book-shelf {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px; 
-  padding-bottom: 16px;
-}
-
-/* 책 줄 */
-/* .book-row {
-  display: flex;
-  justify-content: flex-start;
-  gap: 20px;
-  padding-bottom: 16px;
-  flex-wrap: nowrap;
-  width: 100%;
-} */
-
-/* 책 스타일 */
-.book {
-  background: linear-gradient(145deg, #c9d6ff, #e2e2e2);
-  border-radius: 12px;
-  padding: 1.5rem 1rem;
-  width: 60px;
-  height: 180px;
-  box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.2);
-  font-weight: bold;
-  color: #2c3e50;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 15px;
-  transition: transform 0.2s;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.book:hover {
-  transform: translateY(-10px);
-}
-
-/* 나무 판자 */
-.shelf-bar {
-  width: 100%;
-  height: 14px;
-  background: #6e4b34;
-  border-top: 3px solid #4a2f1b;
-  border-bottom: 2px solid #3b2214;
-  border-radius: 4px;
-}
-
-.book-numbuer{
-  color: #fff;
-  background: #2c3e50;
-  border-radius: 50%;
-  writing-mode: unset;
-  padding: 0px 8px;
-}
-.book-tit{
-  writing-mode: vertical-lr;
-  text-orientation: upright; /* 모든 글자를 세로 방향으로 정렬 */
-  -webkit-text-orientation: upright;
-}
 </style>
