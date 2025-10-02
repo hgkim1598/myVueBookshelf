@@ -2,6 +2,34 @@
 import ContentPage from '@/pages/ContentPage.vue'
 import ExamplePair from '@/components/ExamplePair.vue'
 
+import { ref, reactive, computed, toRefs } from 'vue'
+
+// 예제 1번
+const count = ref(0)
+const doubled = computed(() => count.value * 2)
+const inc = () => { count.value++ }
+
+// 예제 2번
+const user = reactive({
+  name: '',
+  age: 0
+})
+
+// ✅ 반응성 유지: 각 속성을 ref로 풀기
+const { name, age } = toRefs(user)
+
+// 실무에서 종종 하는 패턴: 유효성 검사/제출
+const errors = reactive({ name: '', age: '' })
+const validate = () => {
+  errors.name = name.value.trim() ? '' : '이름을 입력하세요'
+  errors.age = Number(age.value) > 0 ? '' : '나이는 1 이상이어야 합니다'
+  return !errors.name && !errors.age
+}
+
+const submit = () => {
+  if (!validate()) return
+  alert(JSON.stringify(user)) // 실제로는 API 호출
+}
 </script>
 <template>
   <ContentPage>
@@ -38,7 +66,7 @@ import ExamplePair from '@/components/ExamplePair.vue'
 
       <h3><b>reactive</b></h3>
 
-      <div class="list-cneter">
+      <div class="list-center">
         <ul class="list--hang">
           <li>객체/배열을 반응형으로 감쌈</li>
           <li>구조 분히 시 반응성을 잃을 수 있으므로 주의 필요</li>
@@ -96,8 +124,8 @@ import ExamplePair from '@/components/ExamplePair.vue'
 
     <template #code>
       <ExamplePair
-        title=""
-        note=""
+        title="Ex1) ref로 카운터 관리하기"
+        note="작은 단일 상태는 ref가 읽기 쉽고 안전하다"
       >
       <template #code>
         <pre v-pre>
@@ -118,8 +146,90 @@ import ExamplePair from '@/components/ExamplePair.vue'
         </pre>
       </template>
       <template #result>
-
+        <button @click="inc"> + 1 </button>
+        <span> count: {{ count }} / double: {{ doubled }}</span>
       </template>
+      </ExamplePair>
+        
+      <ExamplePair
+        title ="Ex2) reactive로 폼 관리 + toRefs로 구조분해 문제 해결"
+        note ="여러 속성을 가진 폼은 reactive로 묶는다"
+      >
+        <template #code>
+          <pre v-pre>
+            <code>
+              &lt;script setup&gt;
+              import { reactive, toRefs } from 'vue'
+
+              const user = reactive({
+                name: '',
+                age: 0
+              })
+
+              // ❌ 이렇게 하면 반응성 깨짐 (예시)
+              // const { name, age } = user
+
+              // ✅ 반응성 유지: 각 속성을 ref로 풀기
+              const { name, age } = toRefs(user)
+
+              // 실무에서 종종 하는 패턴: 유효성 검사/제출
+              const errors = reactive({ name: '', age: '' })
+              const validate = () =&gt; {
+                errors.name = name.value.trim() ? '' : '이름을 입력하세요'
+                errors.age = Number(age.value) &gt; 0 ? '' : '나이는 1 이상이어야 합니다'
+                return !errors.name &amp;&amp; !errors.age
+              }
+
+              const submit = () =&gt; {
+                if (!validate()) return
+                alert(JSON.stringify(user)) // 실제로는 API 호출
+              }
+              &lt;/script&gt;
+
+              &lt;template&gt;
+                &lt;div class="form"&gt;
+                  &lt;label&gt;
+                    이름
+                    &lt;input v-model="name" placeholder="홍길동" /&gt;
+                    &lt;small style="color:#c33"&gt;{{ errors.name }}&lt;/small&gt;
+                  &lt;/label&gt;
+
+                  &lt;label&gt;
+                    나이
+                    &lt;input v-model.number="age" type="number" min="0" /&gt;
+                    &lt;small style="color:#c33"&gt;{{ errors.age }}&lt;/small&gt;
+                  &lt;/label&gt;
+
+                  &lt;button @click="submit"&gt;제출&lt;/button&gt;
+
+                  &lt;hr /&gt;
+                  &lt;p&gt;미리보기: {{ user }}&lt;/p&gt;
+                &lt;/div&gt;
+              &lt;/template&gt;
+            </code>
+          </pre>
+        </template>
+
+        <template #result>
+          <div class="form">
+            <label>
+              이름
+              <input v-model="name" placeholder="홍길동" />
+              <small style="color:#c33">{{ errors.name }}</small>
+            </label>
+
+            <label>
+              나이
+              <input v-model.number="age" type="number" min="0" />
+              <small style="color:#c33">{{ errors.age }}</small>
+            </label>
+
+            <button @click="submit">제출</button>
+
+            <hr />
+            <p>미리보기: {{ user }}</p>
+          </div>
+        </template>
       </ExamplePair>
     </template>
   </ContentPage>
