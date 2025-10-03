@@ -40,6 +40,13 @@
   }
   .list--hang li::marker { color:#5d7a6b; font-size:.95em; }
 
+  .list--hang li .hang-line {
+    display: block;         /* 줄 단위 블록화 */
+    padding-left: 0.8rem;   /* 마커 기준 들여쓰기 */
+    text-indent: -0.8rem;   /* 첫 줄만 당겨서 마커 옆으로 */
+  }
+
+
   /* ③ PLAIN(점 제거) */
   .list--plain {
     @extend .list-base;
