@@ -17,7 +17,9 @@ import ExamplePair from '@/components/ExamplePair.vue'
             기본 동작(단일 모델)
             <span class="hang-line">부모 템플릿에서</span>
             <span class="hang-line">
-              <pre v-pre><code>&lt;MyInput v-model="value" /&gt;</code></pre>
+              <pre v-pre><code>
+    &lt;MyInput v-model="value" /&gt;
+              </code></pre>
             </span>
             <span class="hang-line">를 쓰면, 자식 컴포넌트는 자동으로</span>
             <ul>
@@ -25,7 +27,11 @@ import ExamplePair from '@/components/ExamplePair.vue'
               <li>
                 <code>update:modelValue</code>emit을 기대한다
                 <span class="hang-line">즉, 아래와 완전히 동일하다</span>
-                <span class="hang-line"><pre v-pre><code>&lt;MyInput :modelValue="value" @update:modelValue="value = $event" /&gt;</code></pre></span>
+                <span class="hang-line">
+                  <pre v-pre><code>
+    &lt;MyInput :modelValue="value" @update:modelValue="value = $event" /&gt;
+                  </code></pre>
+                </span>
               </li>
 
             </ul>
@@ -35,10 +41,10 @@ import ExamplePair from '@/components/ExamplePair.vue'
             <span class="hang-line">하나의 컴포넌트가 둘 이상의 값을 양방향 바인딩할 때:</span>
             <span class="hang-line">
               <pre v-pre><code>
-              &lt;DateRangePicker
-                v-model:start="filters.startDate"
-                v-model:end="filters.endDate"
-              /&gt;
+    &lt;DateRangePicker
+      v-model:start="filters.startDate"
+      v-model:end="filters.endDate"
+    /&gt;
               </code></pre>
             </span>
             <span class="hang-line">
@@ -81,17 +87,79 @@ import ExamplePair from '@/components/ExamplePair.vue'
             <b>A. <code>script setup</code>에서 <code>defineModel()</code>(Vue 3.3+)</b>
             <span class="hang-line">가장 간단하고 최신. 기본/명명 모델 모두 지원</span>
             <div class="hang-line">
-              <pre v-pre>
-                <code>
-                  &lt;script setup&gt;
-                    const model = defineModel()  // 기본 v-model
-                    const title = defineModel('title')  // v-model:title
-                  &lt;/script&gt;
-                </code>
-              </pre>
+              <pre v-pre><code>
+    &lt;script setup&gt;
+      const model = defineModel()  // 기본 v-model
+      const title = defineModel('title')  // v-model:title
+    &lt;/script&gt;
+                </code></pre>
             </div>
             <span class="hang-line">내부에서 <code>model.value = ...</code>처럼 쓰면 자동으로 <code>update:modelValue</code>가 emit된다</span>
           </li>
+          <li>
+            <b>B. 전통방식: <code>defineProps</code> + <code>defineEmits</code></b>
+            <span class="hang-line">Vue3.3 이전 프로젝트나 매크로 사용을 원치 않을 때</span>
+            <div class="hang-line">
+              <pre v-pre><code>
+    &lt;script setup&gt;
+      const props = defineProps({modelValue: String})
+      const emit = defineEmits(['update:modelVaule'])
+      const onInput = (v) => emit('update:modelValue', v)
+    &lt;/script&gt;
+                </code></pre>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="practical-tip">
+        <span class="practical-tip__title">☝🏻 실무 포인트</span>
+        <ul>
+          <li>새 프로젝트/신규 컴포넌트라면 <code>defineModel()</code>권장</li>
+          <li>디자인 시스템/공유 컴포넌트는 명명모델(<code>v-model:foo</code>)로 의도를 드러내면 유지보수성이 좋다</li>
+        </ul>
+      </div>
+
+
+      <h3>3. 수식어가 커스텀 컴포넌트에 올 때는?</h3>
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>부모가
+            <pre v-pre><code>
+    &lt;MyInput v-model.trim="name" /&gt;
+            </code></pre>라고 쓰면 자식은 추가 prop인 <code>modelModifiers</code>를 받는다
+            <div class="hang-line">
+              <pre v-pre><code>
+  const props = defineProps({
+    modelValue: String,
+    modelModifiers: {
+      type: Object,
+      default: () => ({})
+    }
+  })
+
+  let next = raw
+  if (props.modelModifiers?.trim) {
+    next = next.trim()
+  }
+              </code></pre>
+            </div>
+          </li>
+          <li>
+            자식이 이 힌트를 읽어 직접 처리해야한다. (기본 입력 요소와 달리 자동 트림되지 않는다)
+            <div class="hang-line">
+              <code>
+                let next = raw
+                if (props.modelModifiers?.trim) next = next.trim()
+              </code>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="practical-tip">
+        <span class="practical-tip__title">☝🏻 실무 포인트</span>
+        <ul>
+          <li>공용 입력 컴포넌트는 <code>modelModifiers</code>를 지원해두면 재사용성이 급상승한다</li>
+          <li>프로젝트 전반에 동일한 트림/넘버 정책을 적용하려면 컴포넌트 내부에서 일관 처리해야한다</li>
         </ul>
       </div>
     </template>
