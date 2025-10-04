@@ -54,3 +54,26 @@
   }
   .list--plain li { line-height: 1.7; margin: .25rem 0; }
 }
+
+// 실무 포인트 디자인
+.practical-tip{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  background-color: #fffacd;
+  color: #575757;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  ul{
+    li{
+      text-align: start;
+    }
+  }
+  .practical-tip__title{
+    color: #000;
+    font-size: 18px;
+    font-weight: 600;
+  }
+}
