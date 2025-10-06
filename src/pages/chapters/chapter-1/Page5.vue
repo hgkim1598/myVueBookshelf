@@ -2,6 +2,32 @@
 import ContentPage from '@/pages/ContentPage.vue'
 import ExamplePair from '@/components/ExamplePair.vue'
 
+
+/** 예제 1번 */
+import { reactive, computed, watch } from 'vue'
+
+const form = reactive({
+  name: '',
+  age: null,       // 숫자 또는 null
+  memo: ''
+})
+// 실시간 검증(간단 예)
+const errors = reactive({ name: '', age: '' })
+watch(() => form.name, (v) => {
+  errors.name = v ? '' : '이름은 필수입니다.'
+})
+watch(() => form.age, (v) => {
+  errors.age = (v === null || Number.isNaN(v)) ? '나이는 숫자여야 합니다.' : ''
+})
+// 서버 전송용 페이로드(트림된 이름, 숫자 age, 빈 메모 허용)
+const payload = computed(() => ({
+  name: form.name,
+  age: form.age,         // null 허용. 서버 스키마에 맞춰 처리
+  memo: form.memo
+}))
+
+
+
 </script>
 <template>
   <ContentPage>
@@ -162,6 +188,218 @@ import ExamplePair from '@/components/ExamplePair.vue'
           <li>프로젝트 전반에 동일한 트림/넘버 정책을 적용하려면 컴포넌트 내부에서 일관 처리해야한다</li>
         </ul>
       </div>
+
+      <h3>4. v-model과 이벤트(@input/@change) 함께 쓰기 주의</h3>
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>
+            <pre v-pre><code>
+  &lt;input v-model="x" @input="doSomething"&gt;
+            </code></pre>를 동시에 쓰면 동일 이벤트 흐름에서 두 번 반응하거나 업데이트 순서가 꼬이는 문제 발생
+          </li>
+          <li>
+            대안:
+            <ul>
+              <li>
+                값 변경 후 로직이 필요하면 watch를 사용
+                <div class="hang-line">
+                  <code>watch(x, (val, old) => { /** 사이드 이펙트 */ })</code>
+                </div>
+              </li>
+              <li>
+                커스텀 컴포넌트에서는 <code>@update:modelValue="..."</code>를 구독
+                <div class="hang-line">
+                  <pre v-pre><code>
+  &lt;MyInput v-model="x" @update:modelValue="log($event)" /&gt;
+                  </code></pre>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="practical-tip">
+        <span class="practical-tip__title">☝🏻 실무 포인트</span>
+        <ul>
+          <li>폼 입력에서 API 호출/검증/정규화 같은 사이드 이펙트는 watch + 디바운스가 안전하다</li>
+          <li>원시 <code>&lt;input&gt;</code>에선 <code>@input</code>보다 <code>@change</code>(확정 시점)sk <code>.lazy</code>가 안정적일 때가 많다</li>
+        </ul>
+      </div>
+
+
+      <h3>5. 스토어/중첩 객체와 v-model 연결: computed get/set</h3>
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>
+            v-model의 대상이 단순 변수일 필요는 없다. <code>computed</code>의 getter/setter로 중첩값/스토어값을 자연스럽게 연결한다
+            <div class="hang-line">
+              <pre v-pre><code>
+    const form = reactie({ filters: { min: 0, max: 100 } })
+    const minPrice = computed({
+      get: () => form.filters.min 
+      set: v => form.filters.min = v ?? 0
+    })
+              </code></pre>
+            </div>
+          </li>
+          <li>이렇게 만든 <code>minPrice</code>를 v-model에 바로 바인딩하면 양방향으로 동작한다</li>
+        </ul>
+      </div>
+      <div class="practical-tip">
+        <span class="practical-tip__title">☝🏻 실무 포인트</span>
+        <ul>
+          <li>URL 쿼리 동기화, Pinia 상태, 서버 그리드 필터 등과 바인딩 경계를 깔끔히 유지할 수 있는 베스트 패턴이다</li>
+        </ul>
+      </div>
+
+      <h3>6. 체크박스/라디오/멀티셀렉트 실무 팁</h3>
+      <div class="list-center">
+        <ul class="list--hang">
+          <li>체크박스 그룹: <code>v-model</code> 타깃이 배열이면 선택/해제가 자동으로 푸시/제거된다</li>
+          <li>라디오: 단일값 선택. 문자열 변환 주의(<code>.number</code>로 숫자화 가능)</li>
+          <li><code>&lt;select multiple&gt;</code>: 배열 바인딩. 서버 전송시 ID 리스트로 변환하는 헬퍼를 둔다</li>
+        </ul>
+      </div>
+
+      <h3>7. v-model 말고 다른 방법 (대안들)</h3>
+      <div class="list-center">
+        <ol class="list--hang list--hang-ol">
+          <li>
+            명시적 props + emits (v-model의 풀폼)
+            <ul>
+              <li>부모: <code>:modelValue="x" @update:modelValue="x = $event"</code></li>
+              <li>자식: <code>props.modelValue</code>읽고 <code>emit('update:modelVaue', v)</code>로 갱신</li>
+              <li>장점: 흐름이 더 명확, 리팩토링/디버깅이 쉽다</li>
+            </ul>
+          </li>
+          <li>
+            값/이벤트 분리(<code>:value</code> + <code>@input</code> 또는 <code>@change</code>)
+            <ul>
+              <li>원시 입력 제어처럼 다룰 때</li>
+              <li>단, 실무에서는 v-model이 더 일관적이고 팀 합의가 잘 된다</li>
+            </ul>
+          </li>
+          <li>
+            computed get/set로 수동 브라우징
+            <ul>
+              <li>스토어/쿼리스트링/다른 데이터 소스와 중간 계층을 둔다</li>
+            </ul>
+          </li>
+          <li>
+            디바운스/쓰로틀 래퍼 컴포넌트
+            <ul>v-model 대신 <code>:value</code> + <code>@update</code> 확정값만 올려보내기</ul>
+          </li>
+        </ol>
+      </div>
+
+      <div class="practical-tip">
+        <span class="practical-tip__title">📌 정리</span>
+        v-model을 쓰지 말자가 아니라, 상황에 맞춰
+        <ul>
+          <li>명확성(풀폼)</li>
+          <li>입력 제어 세밀함(<code>:value</code> + 이벤트)</li>
+          <li>경계 레이어(computed)를 선택하는 것이 핵심</li>
+        </ul>
+      </div>
+    </template>
+
+    <template #code>
+      <ExamplePair
+        title="Ex1) 기본 폼 + 수식어 + IME/검증 전략"
+        note="사용자 프로필 폼. 이름은 공백 제고, 나이는 숫자, 메모는 조합식 입력(한글)이라 blur시점에만 반영"
+      >
+      <template #code>
+        <pre v-pre><code>
+  &lt;script setup&gt;
+  import { reactive, computed, watch } from 'vue'
+  
+  const form = reactive({
+    name: '',
+    age: null,
+    memo: ''
+  })
+
+  // 실시간 검증(간단 예)
+  const errors = reactive({ name: '', age: '' })
+  watch(() =&gt; form.name, (v) =&gt; {
+    errors.name = v ? '' : '이름은 필수입니다'
+  })
+  watch(() =&gt; form.age, (v) =&gt; {
+    errors.age = (v === null || Number.isNaN(v)) ? '나이는 숫자여야 합니다' : ''
+  })
+
+  const payload = computed(() =&gt; ({
+    name: form.name,
+    age: form.age,
+    memo: form.memeo,
+  }))
+  &lt;/script&gt;
+
+  &lt;template&gt;
+    &lt;form @submit.prevent="$emit('submit', payload)"&gt;
+      &lt;label&gt;
+        이름
+        &lt;input v-model.trim="form.name" placeholder="홍길동" /&gt;
+        &lt;small v-if="errors.name"&gt;{{ errors.name }}&lt;/small&gt;
+      &lt;/label&gt;
+
+      &lt;label&gt;
+        나이
+        &lt;input type="number" v-model.number="form.age" min="0" /&gt;
+        &lt;small v-if="errors.age"&gt;{{ errors.age }}&lt;/small&gt;
+      &lt;/label&gt;
+
+      &lt;label&gt;
+        메모
+        &lt;textarea v-model.lazy="form.memo" placeholder="자유롭게 작성해주세요"&gt; &lt;/textarea&gt;
+      &lt;/label&gt;
+
+      &lt;button type="submit"&gt;저장&lt;/button&gt;
+    &lt;/form&gt;
+  &lt;/template&gt;
+        </code></pre>
+      </template>
+
+      <template #result>
+        <form @submit.prevent="$emit('submit', payload)">
+          <label>
+            이름
+            <!-- 공백 제거 -->
+            <input v-model.trim="form.name" placeholder="홍길동" />
+            <small v-if="errors.name">{{ errors.name }}</small>
+          </label>
+
+          <label>
+            나이
+            <!-- 숫자 변환 (빈값은 null) -->
+            <input type="number" v-model.number="form.age" min="0" />
+            <small v-if="errors.age">{{ errors.age }}</small>
+          </label>
+
+          <label>
+            메모
+            <!-- 조합 입력 안정화: blur/enter에서만 반영 -->
+            <textarea v-model.lazy="form.memo" placeholder="자유롭게 적어주세요"></textarea>
+          </label>
+
+          <button type="submit">저장</button>
+        </form>
+      </template>
+      </ExamplePair>
+
+      <ExamplePair
+        title="커스텀 입력(디바운스) + defineModel + 수식어 대응"
+        note="검색창에서 타이핑할 때 마다 API를 치지 않고, 300ms 디바운스 후 부모에 값을 반영. 부모는 v-model.trim도 사용"
+      >
+      <template #code>
+        <pre v-pre><code>
+          컴포넌트 여러개라 보여주기 어려운 구조... 추후 추가 고려
+        </code></pre>
+      </template>
+      
+    
+    
+    </ExamplePair>
     </template>
   </ContentPage>
 
