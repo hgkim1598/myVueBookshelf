@@ -1,6 +1,11 @@
 <script setup>
 import ContentPage from '@/pages/ContentPage.vue'
 import ExamplePair from '@/components/ExamplePair.vue'
+/** 예제 2번 */
+import { ref } from 'vue'
+import ExampleGroup from '@/components/ExampleGroup.vue'
+import DebouncedInput from '@/pages/chapters/chapter-1/examples/DebouncedInput.vue'
+import ExampleDebounceParent from '@/pages/chapters/chapter-1/examples/ExampleDebounceParent.vue'
 
 
 /** 예제 1번 */
@@ -25,6 +30,9 @@ const payload = computed(() => ({
   age: form.age,         // null 허용. 서버 스키마에 맞춰 처리
   memo: form.memo
 }))
+
+/** 예제 2번 */
+const keyword = ref('')
 
 
 
@@ -387,19 +395,49 @@ const payload = computed(() => ({
       </template>
       </ExamplePair>
 
-      <ExamplePair
-        title="커스텀 입력(디바운스) + defineModel + 수식어 대응"
-        note="검색창에서 타이핑할 때 마다 API를 치지 않고, 300ms 디바운스 후 부모에 값을 반영. 부모는 v-model.trim도 사용"
+      <ExampleGroup
+        title="Ex2) 커스텀 입력(디바운스) + defineModel"
+        note="부모의 .trim이 modelModifiers로 전달되어 자식에서 직접 처리"
       >
-      <template #code>
-        <pre v-pre><code>
-          컴포넌트 여러개라 보여주기 어려운 구조... 추후 추가 고려
-        </code></pre>
-      </template>
-      
-    
-    
-    </ExamplePair>
+        <template #code-parent>
+          <pre v-pre><code>
+    &lt;!-- Parent.vue --&gt;
+    &lt;script setup&gt;
+    import { ref } from 'vue'
+    import DebouncedInput from './DebouncedInput.vue'
+    const keyword = ref('')
+    &lt;/script&gt;
+    &lt;template&gt;
+      &lt;DebouncedInput v-model.trim="keyword" :delay="300" /&gt;
+      &lt;p&gt;검색어: {{ keyword }}&lt;/p&gt;
+    &lt;/template&gt;
+          </code></pre>
+        </template>
+
+        <template #code-child>
+          <pre v-pre><code>
+    &lt;!-- DebouncedInput.vue --&gt;
+    &lt;script setup&gt;
+    import { ref, watch, onBeforeUnmount } from 'vue'
+    const model = defineModel({ default: '' })
+    const props = defineProps({ modelModifiers: {type: Object, default: () =&gt; ({})}, delay: {type: Number, default: 300} })
+    const inner = ref(model.value)
+    let timer = null
+    function applyModifiers(v){ if (props.modelModifiers?.trim) v = v.trim(); return v }
+    watch(inner, (v) =&gt; { if (timer) clearTimeout(timer); timer = setTimeout(() =&gt; { model.value = applyModifiers(v) }, props.delay) })
+    watch(model, (v) =&gt; { if (v !== inner.value) inner.value = v })
+    onBeforeUnmount(() =&gt; { if (timer) clearTimeout(timer) })
+    &lt;/script&gt;
+    &lt;template&gt;
+      &lt;input :value="inner" @input="inner = $event.target.value" placeholder="검색어를 입력하세요" /&gt;
+    &lt;/template&gt;
+          </code></pre>
+        </template>
+
+        <template #result-parent>
+          <ExampleDebounceParent />
+        </template>
+      </ExampleGroup>
     </template>
   </ContentPage>
 
