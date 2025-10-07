@@ -62,11 +62,11 @@ import ExamplePair from '@/components/ExamplePair.vue'
     <template #code>
       <ExamplePair
         title="Ex1) 장바구니 요약(computed) + 로컬스토리지 동기화(watch)"
-        note="1. 가격 합계 / 할인 / 배송비 / 최종 금액 → 모두 computed (파생값 캐싱)
+        :note="`1. 가격 합계 / 할인 / 배송비 / 최종 금액 → 모두 computed (파생값 캐싱)
         \n 2. 장바구니가 바뀌면 로컬 스토리지 저장 → watch + deep:true
-        \n 3. 쿠폰 코드를 바꾸면 디바운스 검증(비동기 흉내) → watch + 타이머 정리"
+        \n 3. 쿠폰 코드를 바꾸면 디바운스 검증(비동기 흉내) → watch + 타이머 정리`"
         >
-        <
+        
       </ExamplePair>
     </template>
   </ContentPage>
