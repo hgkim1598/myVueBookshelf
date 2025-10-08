@@ -54,7 +54,10 @@
   }
   .list--plain li { line-height: 1.7; margin: .25rem 0; }
 }
-
+// 소제목 간 gap
+.space-between-chapter {
+  height: 25px;
+}
 // 실무 포인트 디자인
 .practical-tip{
   display: flex;
@@ -76,6 +79,48 @@
     font-size: 18px;
     font-weight: 600;
   }
+}
+
+// 개념 설명 표
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  background-color: #fff;
+}
+
+.table thead th {
+  text-align: center;
+  white-space: nowrap;
+  background-color: #fafafa;
+}
+
+.table th,
+.tabel td {
+  padding: 10px 12px;
+  border: 1px solid #e6e6e6;
+  vertical-align: top;
+}
+
+.table--compact th,
+.tabel--compact td {
+  padding: 8px 10px;
+}
+
+.table--rowline tbody td {
+  border-bottom: 1px solid var(--tbl-row-sep, #ededed);
+}
+.table--rowline thead th {
+  border-bottom: 2px solid var(--tbl-border, #e6e6e6);
 }
 // 예제 요소 디자인
 .example-btn{

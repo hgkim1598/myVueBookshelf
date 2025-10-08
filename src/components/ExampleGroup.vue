@@ -49,7 +49,7 @@ defineProps({
 .example-group { padding: 12px 0; }
 .ex-header { margin-bottom: 8px; }
 .ex-header h4 { margin: 0 0 6px; font-size: 16px; }
-.ex-note { margin: 0; color: #666; font-size: 13px; }
+.ex-note { margin: 0; color: #666; font-size: 13px; white-space: pre-line; }
 
 /* === 그룹 구조 === */
 .ex-body {
