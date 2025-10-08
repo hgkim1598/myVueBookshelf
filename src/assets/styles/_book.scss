@@ -77,3 +77,35 @@
     font-weight: 600;
   }
 }
+// 예제 요소 디자인
+.example-btn{
+  padding: 1px 7px;
+  background-color: #B3E9B3;
+  border: 1px solid #77DD77;
+  border-radius: 6px;
+  margin: 0px 3px;
+  color: #575757;
+  font-size: 15px;
+}
+
+.example-input{
+  min-width: max-content;
+  height: 15px;
+  border: 2px solid #ebebeb;
+  background-color: #fff;
+  padding: 5px;
+  color: #575757;
+  font-size: 15px;
+  border-radius: 6px;;
+}
+
+.example-select {
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #fff;
+  padding: 5px;
+  color: #575757;
+  font-size: 15px;
+  z-index: 100;
+  margin: 0px 3px;
+}

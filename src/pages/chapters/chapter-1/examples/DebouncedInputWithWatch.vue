@@ -47,6 +47,7 @@ onBeforeUnmount(() => { if (timer) clearTimeout(timer) })
 </script>
 <template>
   <input
+    class="example-input"
     :value="inner"
     :placeholder="placeholder"
     @compositionstart="isComposing = true"

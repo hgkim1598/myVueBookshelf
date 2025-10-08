@@ -3,10 +3,19 @@ import ContentPage from '@/pages/ContentPage.vue'
 import ExamplePair from '@/components/ExamplePair.vue'
 import ExampleGroup from '@/components/ExampleGroup.vue'
 import ExampleDebounceParentWithWatch from './examples/ExampleDebounceParentWithWatch.vue'
+import { resizeInput } from '../../../utils/resizeinput'
 
+// input width 관련 util
+const inputEl = ref(null)
+const inputWidth = ref(0)
+
+const updateWidth = () =>{
+  resizeInput(inputEl.value)
+  inputWidth.value = inputEl.value.scrollWidth + 10
+}
 
 /** 1번 예제 */
-import { reactive, ref, computed, watch, onBeforeUnmount } from 'vue'
+import { reactive, ref, computed, watch, onBeforeUnmount, onMounted } from 'vue'
 const cart = reactive([
   { id: 1, name: '노트북', price: 1500000, qty: 1 },
   { id: 2, name: '마우스', price: 25000, qty: 2 },
@@ -64,6 +73,10 @@ function removeItem(id) {
 }
 
 
+
+onMounted(() =>{
+  updateWidth()
+})
 </script>
 <template>
   <ContentPage>
@@ -240,9 +253,9 @@ function removeItem(id) {
             <ul>
               <li v-for="item in cart" :key="item.id">
                 {{ item.name }} - {{ item.price.toLocaleString() }}원 × {{ item.qty }}
-                <button @click="dec(item.id)">-</button>
-                <button @click="inc(item.id)">+</button>
-                <button @click="removeItem(item.id)">삭제</button>
+                <button class="example-btn" @click="dec(item.id)">-</button>
+                <button class="example-btn" @click="inc(item.id)">+</button>
+                <button class="example-btn" @click="removeItem(item.id)">삭제</button>
               </li>
             </ul>
             <hr/>
@@ -253,8 +266,15 @@ function removeItem(id) {
             <div><b>합계: {{ total.toLocaleString() }}</b></div>
             <hr/>
 
-            <input v-model="couponCode" placeholder="쿠폰 코드를 입력하세요 (SAVE10, MINUS5000)" />
-            <button :disabled="!canCheckout">결제하기</button>
+            <input
+              ref="inputEl"
+              class="example-input" 
+              v-model="couponCode" 
+              placeholder="쿠폰 코드를 입력하세요 (SAVE10, MINUS5000)"
+              @input="updateWidth"
+              :style="{ width: inputWidth + 'px' }"
+            />
+            <button class="example-btn" :disabled="!canCheckout">결제하기</button>
           </section>
         </template>
       </ExamplePair>

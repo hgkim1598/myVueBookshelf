@@ -6,7 +6,7 @@ export const curriculum = [
     id: 1,
     title: 'Vue 3 핵심 문법',
     path: '/chapter-1',
-    totalPages: 6,
+    totalPages: 7,
   },
   // 2주차
   {

@@ -47,7 +47,7 @@ onBeforeUnmount(() => {
       placeholder="검색어"
     />
 
-    <select v-model="category">
+    <select class="example-select" v-model="category">
       <option value="all">전체</option>
       <option value="book">도서</option>
       <option value="device">기기</option>
